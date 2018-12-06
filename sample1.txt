@@ -1,0 +1,3 @@
+thisi is from command prompt
+
+:
