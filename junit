@@ -1,0 +1,85 @@
+package com.training.selenium;
+
+import static org.junit.Assert.*;
+
+import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
+
+import javax.lang.model.element.Parameterizable;
+
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+
+import com.beust.jcommander.Parameterized;
+
+import okhttp3.internal.platform.Platform;
+
+@RunWith(Parameterized.class)
+public class JunitClass {
+	
+	private String platform;
+	private String browser;
+	private String AUT;
+	
+	@Parameterized.Parameters
+	public static LinkedList<String[]> getEnvironments() throws Exception {
+		LinkedList<String[]> env = new LinkedList<String[]>();
+		env.add(new String[]) {Platform.WINDOWS.toString(), "ie", "http://www.amazon.com"});
+		env.add(new String[]) {Platform.WINDOWS.toString(), "ie", "http://www.Facebook.com"});
+		env.add(new String[]) {Platform.WINDOWS.toString(), "chrome", "http://www.fanniemae.com"});
+		env.add(new String[]) {Platform.WINDOWS.toString(), "opera", "http://www.sdettraining.com"});
+	}
+	
+	public JunitClass(String platform, String browser, String aUT) {
+		super();
+		this.platform = platform;
+		this.browser = browser;
+		AUT = aUT;
+	}
+
+
+	@Before
+	public void setUp() throws Exception {
+		if (browser.equals("firefox")){
+			System.setProperty("Webdriver.gecko.driver", "gecodriver.exe");
+			WebDriver driver = new FirefoxDriver();
+			System.out.println("Running test in browser....." + browser);
+			
+		}
+		else if (browser.equals("chrome")){
+			System.setProperty("Webdriver.chrome.driver", "chromedriver.exe");
+		   driver = new ChromeDriver();
+			System.out.println("Running test in browser....." + browser);
+			
+		}
+		else if (browser.equals("ie")){
+			System.setProperty("Webdriver.ie.driver", "IEDriverServer.exe");
+		   driver = new InternetExplorerDriver();
+			System.out.println("Running test in browser....." + browser);
+			
+		}		
+		baseUrl = AUT;
+		driver.manage().timeouts().implecitlyWait(30,TimeUnit.SECONDS);
+	}
+	
+	
+/*	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+	}
+*/
+	@Test
+	public void testVerifyHomePage() throws Exception {
+		driver.get(baseURL + "/");
+		String acgtualPageTitle = driver.GetTitle();
+		System.out.println("Navigated to : " + AUT + " and got Page title as :" + acgtualPageTitle);
+		
+	}
+
+}
